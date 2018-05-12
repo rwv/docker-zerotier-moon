@@ -1,20 +1,17 @@
 #!/bin/sh
 
-# usage ./startup.sh -4 1.2.3.4
+# usage ./startup.sh -4 1.2.3.4 -6 2001:abcd:abcd::1
 
-# TODO
-# IPv6
-
-while getopts "4:6" arg 
+while getopts "4:6:" arg # handle args
 do
         case $arg in
              4)
                 ipv4_address="$OPTARG"
-                echo "ipv4 address: $ipv4_address"
+                echo "IPv4 address: $ipv4_address"
                 ;;
              6)
                 ipv6_address="$OPTARG"
-                echo "ipv6 address: $ipv6_address"
+                echo "IPv6 address: $ipv6_address"
                 ;;
              ?)
             echo "unknown argument"
@@ -22,6 +19,25 @@ do
         ;;
         esac
 done
+
+stableEndpointsForSed=""
+if [ -z ${ipv4_address+x} ]
+then # ipv4 address is not set
+        if [ -z ${ipv6_address+x} ]
+        then # ipv6 address is not set
+                echo "Please set IPv4 address or IPv6 address."
+                exit 0
+        else # ipv6 address is set
+                stableEndpointsForSed="\"$ipv6_address\/9993\""
+        fi
+else # ipv4 address is set
+        if [ -z ${ipv6_address+x} ]
+        then # ipv6 address is not set
+                stableEndpointsForSed="\"$ipv4_address\/9993\""
+        else # ipv6 address is set
+                stableEndpointsForSed="\"$ipv4_address\/9993\",\"$ipv6_address\/9993\""
+        fi
+fi
 
 if [ -d "/var/lib/zerotier-one/moons.d" ] # check if the moons conf has generated
 then
@@ -35,7 +51,7 @@ else
 	        sleep 1
         done
         /zerotier-idtool initmoon /var/lib/zerotier-one/identity.public >>/var/lib/zerotier-one/moon.json
-        sed -i 's/"stableEndpoints": \[\]/"stableEndpoints": ["'$ipv4_address'\/9993"]/g' /var/lib/zerotier-one/moon.json
+        sed -i 's/"stableEndpoints": \[\]/"stableEndpoints": ['$stableEndpointsForSed']/g' /var/lib/zerotier-one/moon.json
         /zerotier-idtool genmoon /var/lib/zerotier-one/moon.json
         mkdir /var/lib/zerotier-one/moons.d
         mv *.moon /var/lib/zerotier-one/moons.d/
