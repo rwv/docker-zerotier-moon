@@ -1,8 +1,10 @@
 #!/bin/sh
 
-# usage ./startup.sh -4 1.2.3.4 -6 2001:abcd:abcd::1
+# usage ./startup.sh -4 1.2.3.4 -6 2001:abcd:abcd::1 -p 9993
 
-while getopts "4:6:" arg # handle args
+moon_port=9993 # default ZeroTier moon port
+
+while getopts "4:6:p:" arg # handle args
 do
         case $arg in
              4)
@@ -12,6 +14,10 @@ do
              6)
                 ipv6_address="$OPTARG"
                 echo "IPv6 address: $ipv6_address"
+                ;;
+             p)
+                moon_port="$OPTARG"
+                echo "Moon port: $moon_port"
                 ;;
              ?)
             echo "unknown argument"
@@ -28,14 +34,14 @@ then # ipv4 address is not set
                 echo "Please set IPv4 address or IPv6 address."
                 exit 0
         else # ipv6 address is set
-                stableEndpointsForSed="\"$ipv6_address\/9993\""
+                stableEndpointsForSed="\"$ipv6_address\/$moon_port\""
         fi
 else # ipv4 address is set
         if [ -z ${ipv6_address+x} ]
         then # ipv6 address is not set
-                stableEndpointsForSed="\"$ipv4_address\/9993\""
+                stableEndpointsForSed="\"$ipv4_address\/$moon_port\""
         else # ipv6 address is set
-                stableEndpointsForSed="\"$ipv4_address\/9993\",\"$ipv6_address\/9993\""
+                stableEndpointsForSed="\"$ipv4_address\/$moon_port\",\"$ipv6_address\/$moon_port\""
         fi
 fi
 
