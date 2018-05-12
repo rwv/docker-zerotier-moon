@@ -20,7 +20,7 @@ When you create a new container, a new moon id will be generated. In order to pe
 
 ## Advanced usage
 
-### Manage Zerotier
+### Manage ZeroTier
 
 ```
 docker exec zerotier-moon /zerotier-cli
