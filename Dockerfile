@@ -1,13 +1,6 @@
-FROM ubuntu:xenial
+FROM zerotier/zerotier-containerized
 
-COPY install.sh /install.sh
-
-RUN apt-get update \
-    && apt-get install -y curl \
-    && bash /install.sh \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get purge -y --auto-remove curl
-
+RUN ln -sf /zerotier-one /zerotier-idtool
 COPY startup.sh /startup.sh
 EXPOSE 9993
 EXPOSE 9993/udp
