@@ -58,7 +58,7 @@ else
         done
         /zerotier-idtool initmoon /var/lib/zerotier-one/identity.public >>/var/lib/zerotier-one/moon.json
         sed -i 's/"stableEndpoints": \[\]/"stableEndpoints": ['$stableEndpointsForSed']/g' /var/lib/zerotier-one/moon.json
-        /zerotier-idtool genmoon /var/lib/zerotier-one/moon.json
+        /zerotier-idtool genmoon /var/lib/zerotier-one/moon.json > /dev/null
         mkdir /var/lib/zerotier-one/moons.d
         mv *.moon /var/lib/zerotier-one/moons.d/
         pkill zerotier-one
