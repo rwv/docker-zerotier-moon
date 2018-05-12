@@ -7,7 +7,7 @@ A docker image to create ZeroTier moon in one setp.
 docker run --name zerotier-moon -d -p 9993:9993 -p 9993:9993/udp seedgou/zerotier-moon -4 1.2.3.4
 ```
  
-Replace `1.2.3.4` by your moon's IP.
+Replace `1.2.3.4` with your moon's IP.
 
 To show your moon id, run
 
@@ -34,11 +34,19 @@ docker run --name zerotier-moon -d -p 9993:9993 -p 9993:9993/udp -v ~/somewhere:
 
 This will mount `~/somewhere` to `/var/lib/zerotier-one` inside the container, allowing your ZeroTier moon to presist the same moon id.  If you don't do this, when you start a new container, a new moon id will be generated.
 
-## IPv6 support
+### IPv6 support
 
 ```
 docker run --name zerotier-moon -d -p 9993:9993 -p 9993:9993/udp seedgou/zerotier-moon -4 1.2.3.4 -6 2001:abcd:abcd::1
 ```
 
-Replace `1.2.3.4`, `2001:abcd:abcd::1` by your moon's IP. You can remove `-4` optional in pure IPv6 environment.
+Replace `1.2.3.4`, `2001:abcd:abcd::1` with your moon's IP. You can remove `-4` optional in pure IPv6 environment.
+
+### Custom port
+
+```
+docker run --name zerotier-moon -d -p 9994:9993 -p 9994:9993/udp seedgou/zerotier-moon -4 1.2.3.4 -p 9994
+```
+
+Replace 9994 with your own custom port for ZeroTier moon.
 
