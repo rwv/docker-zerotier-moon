@@ -64,5 +64,5 @@ else
         pkill zerotier-one
         moon_id=$(cat /var/lib/zerotier-one/moon.json | grep \"id\" | cut -d '"' -f4)
         echo -e "Your ZeroTier moon id is \033[0;31m$moon_id\033[0m, you could orbit moon using \033[0;31m\"zerotier-cli orbit $moon_id $moon_id\"\033[0m"
-        /zerotier-one
+        exec /zerotier-one
 fi
