@@ -1,13 +1,10 @@
-# Builder script copied and modifed from https://github.com/zerotier/ZeroTierOne/blob/master/ext/installfiles/linux/zerotier-containerized/Dockerfile
-
 FROM debian:stretch as builder
 
-## Supports x86_64, x86, arm, and arm64
+# https://www.zerotier.com/download.shtml
 
 RUN apt-get update && apt-get install -y curl gnupg
-RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 0x1657198823e52a61  && \
-    echo "deb http://download.zerotier.com/debian/stretch stretch main" > /etc/apt/sources.list.d/zerotier.list
-RUN apt-get update && apt-get install -y zerotier-one=1.2.12
+RUN curl -s 'https://raw.githubusercontent.com/zerotier/download.zerotier.com/master/htdocs/contact%40zerotier.com.gpg' | gpg --import && \
+    if z=$(curl -s 'https://install.zerotier.com/' | gpg); then echo "$z" | sudo bash; fi
 
 ## Build moon
 
