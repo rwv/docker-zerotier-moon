@@ -4,7 +4,7 @@ FROM debian:stretch as builder
 
 RUN apt-get update && apt-get install -y curl gnupg
 RUN curl -s 'https://raw.githubusercontent.com/zerotier/download.zerotier.com/master/htdocs/contact%40zerotier.com.gpg' | gpg --import && \
-    if z=$(curl -s 'https://install.zerotier.com/' | gpg); then echo "$z" | sudo bash; fi
+    if z=$(curl -s 'https://install.zerotier.com/' | gpg); then echo "$z" | bash; fi
 
 ## Build moon
 
