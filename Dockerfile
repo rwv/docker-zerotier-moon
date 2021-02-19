@@ -1,8 +1,9 @@
-FROM zerotier/zerotier-containerized
+FROM alpine:latest
 
 LABEL maintainer="seedgou <seedgou@gmail.com>"
 
-RUN ln -sf /zerotier-one /zerotier-idtool
+RUN apk add --no-cache zerotier-one
+
 COPY startup.sh /startup.sh
 EXPOSE 9993/udp
 
