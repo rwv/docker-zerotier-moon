@@ -28,6 +28,8 @@ jobs:
         with:
           push: true
           tags: seedgou/zerotier-moon:edge
+          platforms: linux/amd64,linux/386,linux/ppc64le
+          builder: ${{ steps.buildx.outputs.name }}
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
