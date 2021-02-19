@@ -57,3 +57,7 @@ docker run --name zerotier-moon -d -p 9994:9993/udp seedgou/zerotier-moon -4 1.2
 ```
 
 Replace 9994 with your own custom port for ZeroTier moon.
+
+### Multi-arch support
+
+This images support `linux/386`, `linux/amd64` and `linux/ppc64le`.
