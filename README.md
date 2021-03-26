@@ -1,4 +1,10 @@
 # docker-zerotier-moon
+<a href="https://github.com/rwv/docker-zerotier-moon/actions">
+    <img src="https://img.shields.io/github/workflow/status/rwv/docker-zerotier-moon/docker_hub_latest?label=GitHub%20Actions" alt="GitHub Actions" />
+</a>
+<a href="https://hub.docker.com/r/seedgou/zerotier-moon">
+    <img src="https://img.shields.io/docker/pulls/seedgou/zerotier-moon" alt="Docker Hub" />
+</a>
 A docker image to create ZeroTier moon in one setp.
 
 ## Usage
