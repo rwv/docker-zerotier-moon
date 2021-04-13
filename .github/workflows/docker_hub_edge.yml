@@ -1,4 +1,4 @@
-name: docker_hub_edge
+name: Publish to Docker Hub edge tag
 
 on:
   push:

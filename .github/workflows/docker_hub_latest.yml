@@ -1,4 +1,4 @@
-name: docker_hub_latest
+name: Publish to Docker Hub latest tag
 
 on:
   release:
