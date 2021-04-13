@@ -66,6 +66,17 @@ docker run --name zerotier-moon -d -p 9994:9993/udp seedgou/zerotier-moon -4 1.2
 
 Replace 9994 with your own custom port for ZeroTier moon.
 
+### Network privilege
+
+If you encounter issue: `ERROR: unable to configure virtual network port: could not open TUN/TAP device: No such file or directory`, please add `--cap-add=NET_ADMIN --cap-add=SYS_ADMIN --device=/dev/net/tun` args. Similar to this:
+
+```
+docker run --cap-add=NET_ADMIN --cap-add=SYS_ADMIN --device=/dev/net/tun --name zerotier-moon -d --restart always -p 9993:9993/udp seedgou/zerotier-moon -4 1.2.3.4
+```
+
+Solution provided by [Jonnyan404's Fork](https://github.com/Jonnyan404/docker-zerotier-moon).
+See Also [Issue #1](https://github.com/rwv/docker-zerotier-moon/issues/1).
+
 ### Multi-arch support
 
 This images support `linux/386`, `linux/amd64` and `linux/ppc64le`.
