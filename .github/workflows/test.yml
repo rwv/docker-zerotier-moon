@@ -1,0 +1,49 @@
+name: Test
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+        
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+        
+      - name: Build this image
+        run: docker build -t zerotier-moon .
+      
+      - name: Setup ZeroTier moon
+        run: docker run --name zerotier-moon -d --restart always -p 9994:9993/udp zerotier-moon -4 127.0.0.1 -p 9994
+      
+      - name: Wait 10 secs for moon id to generate
+        run: sleep 10
+
+      - name: Get moon id file from docker
+        run: docker cp zerotier-moon:/var/lib/zerotier-one/moon.json ./moon.json
+
+      - name: Check whether moon id is generated
+        run: if test $(cat ./moon.json | jq '.id') = null; then exit 125; fi
+
+      - name: Display moon id
+        run: echo "The moon id is $(cat ./moon.json | jq '.id' | tr -d '"')"
+
+      - name: Setup Latest ZeroTier
+        run: curl -s https://install.zerotier.com | sudo bash
+
+      - name: Wait 10 secs for ZeroTier identity to generate
+        run: sleep 10
+
+      - name: Join ZeroTier moon
+        run: sudo zerotier-cli orbit $(cat ./moon.json | jq '.id' | tr -d '"') $(cat ./moon.json | jq '.id' | tr -d '"')
+
+      - name: Wait 10 secs for ZeroTier moon to join
+        run: sleep 10
+
+      - name: Check if moon id equals
+        run: if [ $(cat ./moon.json | jq '.id' | tr -d '"') != $(sudo zerotier-cli listmoons | jq '.[0].id' | tr -d '"' |  sed 's/^0*//') ]; then exit 125; fi
