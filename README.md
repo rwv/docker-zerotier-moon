@@ -79,4 +79,4 @@ See Also [Issue #1](https://github.com/rwv/docker-zerotier-moon/issues/1).
 
 ### Multi-arch support
 
-This images support `linux/386`, `linux/amd64` and `linux/ppc64le`.
+This image supports `linux/386`, `linux/amd64` and `linux/ppc64le`.
