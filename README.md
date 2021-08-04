@@ -1,4 +1,5 @@
 # docker-zerotier-moon
+
 <a href="https://github.com/rwv/docker-zerotier-moon/actions">
     <img src="https://img.shields.io/github/workflow/status/rwv/docker-zerotier-moon/docker_hub_latest" alt="GitHub Actions" />
 </a>
@@ -22,7 +23,7 @@ docker pull seedgou/zerotier-moon
 ```
 docker run --name zerotier-moon -d --restart always -p 9993:9993/udp seedgou/zerotier-moon -4 1.2.3.4
 ```
- 
+
 Replace `1.2.3.4` with your moon's IP.
 
 To show your moon id, run
@@ -48,7 +49,7 @@ docker exec zerotier-moon /zerotier-cli
 docker run --name zerotier-moon -d -p 9993:9993/udp -v ~/somewhere:/var/lib/zerotier-one seedgou/zerotier-moon -4 1.2.3.4 -6 2001:abcd:abcd::1
 ```
 
-This will mount `~/somewhere` to `/var/lib/zerotier-one` inside the container, allowing your ZeroTier moon to presist the same moon id.  If you don't do this, when you start a new container, a new moon id will be generated.
+This will mount `~/somewhere` to `/var/lib/zerotier-one` inside the container, allowing your ZeroTier moon to presist the same moon id. If you don't do this, when you start a new container, a new moon id will be generated.
 
 ### IPv6 support
 
@@ -79,4 +80,4 @@ See Also [Issue #1](https://github.com/rwv/docker-zerotier-moon/issues/1).
 
 ### Multi-arch support
 
-This image supports `linux/386`, `linux/amd64` and `linux/ppc64le`.
+This image supports `linux/386`, `linux/amd64`, `linux/ppc64le`, `linux/arm64`, `linux/arm/v7`, and `linux/armhf`.
