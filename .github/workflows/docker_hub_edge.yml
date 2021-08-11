@@ -28,7 +28,7 @@ jobs:
         with:
           push: true
           tags: seedgou/zerotier-moon:edge
-          platforms: linux/amd64,linux/386,linux/ppc64le,linux/s390x,linux/arm64,linux/armhf,linux/arm/v7
+          platforms: linux/amd64,linux/386,linux/ppc64le,linux/s390x,linux/arm64,linux/arm/v6,linux/arm/v7
           builder: ${{ steps.buildx.outputs.name }}
       -
         name: Image digest
