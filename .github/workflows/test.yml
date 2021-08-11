@@ -15,8 +15,11 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
         
-      - name: Build this image
+      - name: Build this image for multi arch
         run: docker buildx build -t seedgou/zerotier-moon:edge --platform=linux/amd64,linux/386,linux/ppc64le,linux/s390x,linux/arm64,linux/arm/v6,linux/arm/v7 .
+      
+      - name: Build this image
+        run: docker build -t zerotier-moon .
       
       - name: Setup ZeroTier moon
         run: docker run --name zerotier-moon -d --restart always -p 9994:9993/udp zerotier-moon -4 127.0.0.1 -p 9994
