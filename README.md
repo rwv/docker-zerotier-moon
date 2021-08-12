@@ -10,30 +10,35 @@
 <br>
 A docker image to create ZeroTier moon in one setp.
 
-## Usage
+## Table of Contents
 
-### Pull the image
+- [Quickstart](#quickstart)
+  - [Start a container](#start-a-container)
+  - [Show ZeroTier moon id](#show-zerotier-moon-id)
+- [Advanced usage](#advanced-usage)
+  - [Manage ZeroTier](#manage-zerotier)
+  - [Mount ZeroTier conf folder](#mount-zerotier-conf-folder)
+  - [IPv6 support](#ipv6-support)
+  - [Custom port](#custom-port)
+  - [Network privilege](#network-privilege)
+  - [Multi-arch support](#multi-arch-support)
+  - [GitHub Container Registry](#github-container-registry)
 
-```
-docker pull seedgou/zerotier-moon
-```
+## Quickstart
 
 ### Start a container
 
 ```
-docker run --name zerotier-moon -d --restart always -p 9993:9993/udp seedgou/zerotier-moon -4 1.2.3.4
+docker run --name zerotier-moon -d --restart always -p 9993:9993/udp -v ~/somewhere:/var/lib/zerotier-one seedgou/zerotier-moon -4 1.2.3.4
 ```
 
-Replace `1.2.3.4` with your moon's IP.
+Replace `1.2.3.4` with your moon's IPv4 address and replace `~/somewhere` with where you would like to store your configuration.
 
-To show your moon id, run
+### Show ZeroTier moon id
 
 ```
 docker logs zerotier-moon
 ```
-
-**Notice:**
-When creating a new container, a new moon id will be generated. To persist the identity when creating a new container, see **Mount ZeroTier conf folder** below.
 
 ## Advanced usage
 
@@ -49,7 +54,7 @@ docker exec zerotier-moon /zerotier-cli
 docker run --name zerotier-moon -d -p 9993:9993/udp -v ~/somewhere:/var/lib/zerotier-one seedgou/zerotier-moon -4 1.2.3.4 -6 2001:abcd:abcd::1
 ```
 
-This will mount `~/somewhere` to `/var/lib/zerotier-one` inside the container, allowing your ZeroTier moon to presist the same moon id. If you don't do this, when you start a new container, a new moon id will be generated.
+When creating a new container without mounting ZeroTier conf folder, a new moon id will be generated. This command will mount `~/somewhere` to `/var/lib/zerotier-one` inside the container, allowing your ZeroTier moon to presist the same moon id. If you don't do this, when you start a new container, a new moon id will be generated.
 
 ### IPv6 support
 
@@ -81,3 +86,7 @@ See Also [Issue #1](https://github.com/rwv/docker-zerotier-moon/issues/1).
 ### Multi-arch support
 
 This image supports `linux/386`, `linux/amd64`, `linux/ppc64le`, `linux/arm64`, `linux/arm/v7`, `linux/arm/v6` and `linux/s390x`.
+
+### GitHub Container Registry
+
+This image is also published on GitHub Container Registry: [`ghcr.io/rwv/zerotier-moon`](https://ghcr.io/rwv/zerotier-moon)
