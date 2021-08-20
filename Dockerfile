@@ -1,6 +1,6 @@
-ARG ZT_VERSION=1.6.5
-
 FROM alpine:latest
+
+ARG ZT_VERSION=1.6.5
 
 LABEL maintainer="seedgou <seedgou@gmail.com>"
 
