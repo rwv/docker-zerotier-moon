@@ -1,4 +1,6 @@
-FROM alpine:latest
+ARG ALPINE_VERSION=3.14
+
+FROM alpine:${ALPINE_VERSION}
 
 ARG ZT_VERSION=1.6.5-r0
 
