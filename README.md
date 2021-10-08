@@ -4,6 +4,7 @@
     <img src="https://img.shields.io/github/workflow/status/rwv/docker-zerotier-moon/Docker" alt="GitHub Actions" />
 </a>
 <a href="https://hub.docker.com/r/seedgou/zerotier-moon">
+    <img src="https://img.shields.io/docker/v/seedgou/zerotier-moon?sort=semver" alt="Docker Version" />
     <img src="https://img.shields.io/docker/pulls/seedgou/zerotier-moon" alt="Docker Hub" />
     <img src="https://img.shields.io/docker/image-size/seedgou/zerotier-moon/latest" alt="Docker Image Size" />
 </a>
