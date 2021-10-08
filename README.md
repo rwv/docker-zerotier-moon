@@ -10,11 +10,16 @@
 <br>
 A docker image to create ZeroTier moon in one setp.
 
+Have a look at dockerized ZeroTier: [rwv/zerotier](https://github.com/rwv/docker-zerotier).
+
 ## Table of Contents
 
 - [Quickstart](#quickstart)
   - [Start a container](#start-a-container)
   - [Show ZeroTier moon id](#show-zerotier-moon-id)
+- [Docker Compose](#docker-compose)
+  - [Compose file](#compose-file)
+  - [Show ZeroTier moon id](#show-zerotier-moon-id-1)
 - [Advanced usage](#advanced-usage)
   - [Manage ZeroTier](#manage-zerotier)
   - [Mount ZeroTier conf folder](#mount-zerotier-conf-folder)
@@ -40,18 +45,50 @@ Replace `1.2.3.4` with your moon's IPv4 address and replace `~/somewhere` with w
 docker logs zerotier-moon
 ```
 
+## Docker Compose
+
+### Compose file
+
+`docker-compose.yml` example:
+
+``` YAML
+version: "3"
+
+services:
+  zerotier-moon:
+    image: seedgou/zerotier-moon
+    container_name: "zerotier-moon"
+    restart: always
+    ports:
+      - "9993:9993/udp"
+    volumes:
+      - ./config:/var/lib/zerotier-one
+    entrypoint:
+      - /startup.sh
+      - "-4"
+      - 1.2.3.4
+```
+
+Replace `1.2.3.4` with your moon's IPv4 address.
+
+### Show ZeroTier moon id
+
+``` bash
+docker-compose logs
+```
+
 ## Advanced usage
 
 ### Manage ZeroTier
 
 ```
-docker exec zerotier-moon /zerotier-cli
+docker exec zerotier-moon zerotier-cli
 ```
 
 ### Mount ZeroTier conf folder
 
 ```
-docker run --name zerotier-moon -d -p 9993:9993/udp -v ~/somewhere:/var/lib/zerotier-one seedgou/zerotier-moon -4 1.2.3.4 -6 2001:abcd:abcd::1
+docker run --name zerotier-moon -d -p 9993:9993/udp -v ~/somewhere:/var/lib/zerotier-one seedgou/zerotier-moon -4 1.2.3.4 
 ```
 
 When creating a new container without mounting ZeroTier conf folder, a new moon id will be generated. This command will mount `~/somewhere` to `/var/lib/zerotier-one` inside the container, allowing your ZeroTier moon to presist the same moon id. If you don't do this, when you start a new container, a new moon id will be generated.
