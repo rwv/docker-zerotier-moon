@@ -16,7 +16,7 @@ jobs:
         uses: docker/setup-buildx-action@v1
         
       - name: Build this image for multi arch
-        run: docker buildx build -t seedgou/zerotier-moon:edge --platform=linux/amd64,linux/386,linux/ppc64le,linux/s390x,linux/arm64,linux/arm/v6,linux/arm/v7 .
+        run: docker buildx build -t seedgou/zerotier-moon:edge --platform=linux/386,linux/amd64,linux/arm/v7,linux/arm64,linux/mips64le,linux/ppc64le,linux/s390x .
       
       - name: Build this image
         run: docker build -t zerotier-moon .
