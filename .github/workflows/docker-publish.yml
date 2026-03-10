@@ -2,36 +2,98 @@ name: Docker
 
 on:
   push:
+    branches:
+      - master
+    tags:
+      - 'v*.*.*'
   pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+env:
+  DOCKERHUB_IMAGE: seedgou/zerotier-moon
+  GHCR_IMAGE: ghcr.io/rwv/zerotier-moon
+  PLATFORMS: linux/386,linux/amd64,linux/arm/v7,linux/arm64,linux/mips64le,linux/ppc64le,linux/s390x
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build this image for multi arch
+        run: docker buildx build -t ${{ env.DOCKERHUB_IMAGE }}:edge --platform=${{ env.PLATFORMS }} .
+
+      - name: Build this image
+        run: docker build -t zerotier-moon .
+
+      - name: Setup ZeroTier moon
+        run: docker run --name zerotier-moon -d --restart always -p 9994:9993/udp zerotier-moon -4 127.0.0.1 -p 9994
+
+      - name: Wait 10 secs for moon id to generate
+        run: sleep 10
+
+      - name: Get moon id file from docker
+        run: docker cp zerotier-moon:/var/lib/zerotier-one/moon.json ./moon.json
+
+      - name: Check whether moon id is generated
+        run: if test $(cat ./moon.json | jq '.id') = null; then exit 125; fi
+
+      - name: Display moon id
+        run: echo "The moon id is $(cat ./moon.json | jq '.id' | tr -d '"')"
+
+      - name: Setup Latest ZeroTier
+        run: curl -s https://install.zerotier.com | sudo bash
+
+      - name: Wait 10 secs for ZeroTier identity to generate
+        run: sleep 10
+
+      - name: Join ZeroTier moon
+        run: sudo zerotier-cli orbit $(cat ./moon.json | jq '.id' | tr -d '"') $(cat ./moon.json | jq '.id' | tr -d '"')
+
+      - name: Wait 10 secs for ZeroTier moon to join
+        run: sleep 10
+
+      - name: Check if moon id equals
+        run: if [ $(cat ./moon.json | jq '.id' | tr -d '"') != $(sudo zerotier-cli listmoons | jq '.[0].id' | tr -d '"' | sed 's/^0*//') ]; then exit 125; fi
+
+  publish:
+    needs: test
+    if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v'))
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v5
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v3
 
       - name: Login to Docker Hub
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v1
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
-        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -41,18 +103,26 @@ jobs:
       # https://github.com/docker/metadata-action
       - name: Extract Docker metadata
         id: meta
-        uses: docker/metadata-action@v3
+        uses: docker/metadata-action@v5
         with:
-          images: seedgou/zerotier-moon,ghcr.io/rwv/zerotier-moon
+          images: |
+            ${{ env.DOCKERHUB_IMAGE }}
+            ${{ env.GHCR_IMAGE }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
       - name: Build and push Docker image
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v6
         with:
           context: .
-          push: ${{ github.event_name != 'pull_request' }}
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          platforms: linux/386,linux/amd64,linux/arm/v7,linux/arm64,linux/mips64le,linux/ppc64le,linux/s390x
-          builder: ${{ steps.buildx.outputs.name }}
+          platforms: ${{ env.PLATFORMS }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
