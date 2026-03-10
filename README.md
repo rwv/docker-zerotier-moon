@@ -9,7 +9,9 @@
     <img src="https://img.shields.io/docker/image-size/seedgou/zerotier-moon/latest" alt="Docker Image Size" />
 </a>
 <br>
-A docker image to create ZeroTier moon in one setp.
+A docker image to create a ZeroTier moon in one step.
+
+This image now inherits ZeroTier from the official [`zerotier/zerotier`](https://hub.docker.com/r/zerotier/zerotier/tags) base image instead of installing `zerotier-one` from Alpine packages.
 
 Have a look at dockerized ZeroTier: [rwv/zerotier](https://github.com/rwv/docker-zerotier).
 
@@ -92,7 +94,7 @@ docker exec zerotier-moon zerotier-cli
 docker run --name zerotier-moon -d -p 9993:9993/udp -v ~/somewhere:/var/lib/zerotier-one seedgou/zerotier-moon -4 1.2.3.4 
 ```
 
-When creating a new container without mounting ZeroTier conf folder, a new moon id will be generated. This command will mount `~/somewhere` to `/var/lib/zerotier-one` inside the container, allowing your ZeroTier moon to presist the same moon id. If you don't do this, when you start a new container, a new moon id will be generated.
+When creating a new container without mounting ZeroTier conf folder, a new moon id will be generated. This command will mount `~/somewhere` to `/var/lib/zerotier-one` inside the container, allowing your ZeroTier moon to persist the same moon id. If you don't do this, when you start a new container, a new moon id will be generated.
 
 ### IPv6 support
 
@@ -123,7 +125,7 @@ See Also [Issue #1](https://github.com/rwv/docker-zerotier-moon/issues/1).
 
 ### Multi-arch support
 
-This image supports `linux/386`, `linux/amd64`, `linux/ppc64le`, `linux/arm64`, `linux/arm/v7`, `linux/arm/v6`, `linux/s390x` and `linux/riscv64`.
+This image supports `linux/386`, `linux/amd64`, `linux/arm/v7`, `linux/arm64`, `linux/mips64le`, `linux/ppc64le`, and `linux/s390x`.
 
 ### GitHub Container Registry
 
